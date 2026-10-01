@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Recomendaciones de Películas</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; background-color: #f4f6f9; }
+        h1 { color: #333; }
+        .filter-form { margin-bottom: 20px; }
+        select, button { padding: 8px 12px; font-size: 14px; }
+        .card { background: white; padding: 15px; margin-bottom: 12px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .rating { font-weight: bold; color: #e67e22; }
+    </style>
+</head>
+<body>
+    <h1>Películas Mejor Valoradas</h1>
+
+    <form method="get" class="filter-form">
+        <label for="genre">Filtrar por género:</label>
+        <select name="genre" id="genre" onchange="this.form.submit()">
+            <option value="">Todos los géneros</option>
+            {% for genre in genres %}
+                <option value="{{ genre.id }}" {% if genre.id == selected_genre_id %}selected{% endif %}>
+                    {{ genre.name }}
+                </option>
+            {% endfor %}
+        </select>
+    </form>
+
+    {% if movies %}
+        {% for movie in movies %}
+            <div class="card">
+                <h3>{{ movie.title }} ({{ movie.release_year }})</h3>
+                <p class="rating">Valoración promedio: ★ {{ movie.avg_rating|floatformat:1 }} / 5.0</p>
+                <p><strong>Géneros:</strong> {% for g in movie.genres.all %}{{ g.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No se encontraron películas valoradas para este filtro.</p>
+    {% endif %}
+</body>
+</html>
